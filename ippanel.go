@@ -16,10 +16,10 @@ import (
 
 const (
 	// ClientVersion is used in User-Agent request header to provide server with API level.
-	ClientVersion = "1.0.1"
+	ClientVersion = "2.0.0"
 
 	// Endpoint points you to Ippanel REST API.
-	Endpoint = "http://rest.ippanel.com/v1"
+	Endpoint = "https://api2.ippanel.com/api/v1"
 
 	// httpClientTimeout is used to limit http.Client waiting time.
 	httpClientTimeout = 30 * time.Second
@@ -27,13 +27,13 @@ const (
 
 // Ippanel ...
 type Ippanel struct {
-	AccessKey string
-	Client    *http.Client
-	BaseURL   *url.URL
+	Apikey  string
+	Client  *http.Client
+	BaseURL *url.URL
 }
 
 // New create new ippanel sms instance
-func New(accesskey string) *Ippanel {
+func New(apikey string) *Ippanel {
 	u, _ := url.Parse(Endpoint)
 	client := &http.Client{
 		Transport: http.DefaultTransport,
@@ -41,8 +41,8 @@ func New(accesskey string) *Ippanel {
 	}
 
 	return &Ippanel{
-		AccessKey: accesskey,
-		Client:    client,
-		BaseURL:   u,
+		Apikey:  apikey,
+		Client:  client,
+		BaseURL: u,
 	}
 }

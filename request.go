@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	// ErrUnexpectedResponse is used when there was an internal server error and nothing can be done at this point.
 	ErrUnexpectedResponse = errors.New("The Ippanel API is currently unavailable")
+	ErrStatusUnauthorized = errors.New("You api key is not valid")
 )
 
 // ListParams ...
@@ -35,10 +35,11 @@ type PaginationInfo struct {
 
 // BaseResponse base response model
 type BaseResponse struct {
-	Status string          `json:"status"`
-	Code   ResponseCode    `json:"code"`
-	Data   json.RawMessage `json:"data"`
-	Meta   *PaginationInfo `json:"meta"`
+	Status       string          `json:"status"`
+	Code         ResponseCode    `json:"code"`
+	Data         json.RawMessage `json:"data"`
+	Meta         *PaginationInfo `json:"meta"`
+	ErrorMessage string          `json:"error_message"`
 }
 
 // request preform http request
@@ -68,7 +69,7 @@ func (sms Ippanel) request(method string, uri string, params map[string]string, 
 
 	//req.Header.Set("Accept", "application/json")
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "AccessKey "+sms.AccessKey)
+	req.Header.Set("Apikey", sms.Apikey)
 	req.Header.Set("User-Agent", "Ippanel/ApiClient/"+ClientVersion+" Go/"+runtime.Version())
 
 	res, err := sms.Client.Do(req)
@@ -91,11 +92,11 @@ func (sms Ippanel) request(method string, uri string, params map[string]string, 
 		}
 
 		return _res, nil
-	case http.StatusNoContent:
-		// Status code 204 is returned for successful DELETE requests. Don't try to
-		// unmarshal the body: that would return errors.
-		return nil, nil
 	case http.StatusInternalServerError:
+		// Status code 500 is a server error and means nothing can be done at this
+		// point.
+		return nil, ErrUnexpectedResponse
+	case http.StatusUnauthorized:
 		// Status code 500 is a server error and means nothing can be done at this
 		// point.
 		return nil, ErrUnexpectedResponse

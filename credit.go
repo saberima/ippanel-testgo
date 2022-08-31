@@ -9,7 +9,7 @@ type getCreditResType struct {
 
 // GetCredit get credit for user
 func (sms *Ippanel) GetCredit() (float64, error) {
-	_res, err := sms.get("/credit", nil)
+	_res, err := sms.get("/sms/accounting/credit/show", nil)
 	if err != nil {
 		return 0, err
 	}

@@ -1,7 +1,5 @@
 # IPPANEL SMS api SDK
 
-This repository contains open source Go client for `ippanel` api. Documentation can be found at: <http://docs.ippanel.com>.
-
 [![Build Status](https://travis-ci.org/ippanel/go-rest-sdk.svg?branch=master)](https://travis-ci.org/ippanel/go-rest-sdk) [![GoDoc](https://godoc.org/github.com/ippanel/go-rest-sdk?status.svg)](https://godoc.org/github.com/ippanel/go-rest-sdk)
 
 ## Installation
@@ -9,7 +7,7 @@ This repository contains open source Go client for `ippanel` api. Documentation 
 If you are using go modules, just install it with `go mod install` or `go build .`, Otherwise you can use `go get ./...`
 
 ```bash
-go get github.com/ippanel/go-rest-sdk
+go get github.com/ippanel/go-rest-sdk/v2
 ```
 
 ## Examples
@@ -17,7 +15,7 @@ go get github.com/ippanel/go-rest-sdk
 After installing ippanel sdk with above methods, you can import it in your project like this:
 
 ```go
-import "github.com/ippanel/go-rest-sdk"
+import "github.com/ippanel/go-rest-sdk/v2"
 ```
 
 For using sdk, after importing, you have to create a client instance that gives you available methods on API
@@ -47,7 +45,7 @@ if err != nil {
 For sending sms, obviously you need `originator` number, `recipients` and `message`.
 
 ```go
-bulkID, err := sms.Send("+9810001", []string{"98912xxxxxxx"}, "ippanel is awesome")
+MessageId, err := sms.Send("+9810001", []string{"98912xxxxxxx"}, "ippanel is awesome")
 if err != nil {
     t.Error("error occurred ", err)
 }
@@ -58,9 +56,9 @@ If send is successful, a unique tracking code returned and you can track your me
 ### Get message summery
 
 ```go
-bulkID := "message-tracking-code"
+MessageId := "message-tracking-code"
 
-message, err := sms.GetMessage(bulkID)
+message, err := sms.GetMessage(MessageId)
 if err != nil {
     t.Error("error occurred ", err)
 }
@@ -73,11 +71,11 @@ fmt.Println(message.Payack) // get message payback
 ### Get message delivery statuses
 
 ```go
-bulkID := "message-tracking-code"
+MessageId := "message-tracking-code"
 // pagination params for defining fetch size and offset
 paginationParams := ippanel.ListParams{Page: 0, Limit: 10}
 
-statuses, paginationInfo, err := sms.FetchStatuses(bulkID, paginationParams)
+statuses, paginationInfo, err := sms.FetchStatuses(MessageId, paginationParams)
 if err != nil {
     t.Error("error occurred ", err)
 }
@@ -121,7 +119,7 @@ patternValues := map[string]string{
     "name": "IPPANEL",
 }
 
-bulkID, err := sms.SendPattern(
+MessageId, err := sms.SendPattern(
     "t2cfmnyo0c",   // pattern code
     "+9810001",     // originator
     "98912xxxxxxx", // recipient

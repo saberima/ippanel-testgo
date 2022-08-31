@@ -6,21 +6,21 @@ import (
 
 // TestSend test send sms
 func TestSend(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
-	bulkID, err := sms.Send("+9810001", []string{"98912xxxxxxx"}, "ippanel is awesome")
+	MessageId, err := sms.Send("+983000505", []string{"989153621841"}, "ippanel is awesome", "Summary")
 	if err != nil {
 		t.Error("error occurred ", err)
 	}
 
-	t.Log(bulkID)
+	t.Log(MessageId)
 }
 
 // TestErrors test api errors handling
 func TestErrors(t *testing.T) {
-	sms := New("API_KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
-	_, err := sms.Send("9810001", []string{"98912xxxxx"}, "ippanel is awesome")
+	_, err := sms.Send("983000505", []string{"989153621841"}, "ippanel is awesome", "Summary")
 	if err != nil {
 		if e, ok := err.(Error); ok {
 			switch e.Code {
@@ -39,10 +39,10 @@ func TestErrors(t *testing.T) {
 
 // TestGetMessage tests getMessage method
 func TestGetMessage(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
-	// 73301196
-	message, err := sms.GetMessage(73301196)
+	// 391245018
+	message, err := sms.GetMessage(391245018)
 	if err != nil {
 		t.Error("error occurred ", err)
 	}
@@ -52,10 +52,10 @@ func TestGetMessage(t *testing.T) {
 
 // TestFetchStatuses test fetch message recipients status
 func TestFetchStatuses(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
-	// 73301196
-	statuses, paginationInfo, err := sms.FetchStatuses(73301196, ListParams{Page: 0, Limit: 10})
+	// 391245018
+	statuses, paginationInfo, err := sms.FetchStatuses(391245018, ListParams{Page: 0, Limit: 10})
 	if err != nil {
 		t.Error("error occurred ", err)
 	}
@@ -65,7 +65,7 @@ func TestFetchStatuses(t *testing.T) {
 
 // TestFetchInbox fetch inbox test
 func TestFetchInbox(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
 	messages, paginationInfo, err := sms.FetchInbox(ListParams{Page: 1, Limit: 10})
 	if err != nil {
@@ -77,9 +77,11 @@ func TestFetchInbox(t *testing.T) {
 
 // TestCreatePattern test create pattern
 func TestCreatePattern(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
-	pattern, err := sms.CreatePattern("%name% is awesome", true)
+	pattern, err := sms.CreatePattern("%name% is awesome, your code is %%code%", "description", map[string]string{
+		"name": "string", "code": "string",
+	}, "%", true)
 	if err != nil {
 		t.Error("error occurred ", err)
 	}
@@ -89,26 +91,27 @@ func TestCreatePattern(t *testing.T) {
 
 // TestSendPattern test send with pattern
 func TestSendPattern(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 	patternValues := map[string]string{
 		"name": "IPPANEL",
+		"code": "code",
 	}
 
-	bulkID, err := sms.SendPattern(
-		"t2cfmnyo0c",   // pattern code
-		"+9810001",     // originator
-		"98912xxxxxxx", // recipient
-		patternValues,  // pattern values
+	MessageId, err := sms.SendPattern(
+		"tvixsy9ed89ukfu", // pattern code
+		"+983000505",      // originator
+		"989153621841",    // recipient
+		patternValues,     // pattern values
 	)
 	if err != nil {
 		t.Error("error occurred ", err)
 	}
 
-	t.Log(bulkID)
+	t.Log(MessageId)
 }
 
 func TestGetCredit(t *testing.T) {
-	sms := New("API-KEY")
+	sms := New("6Aujg2MOwhOlIy3h_PeXJLtCl8TudIwEgv1mZMW_WMA=")
 
 	credit, err := sms.GetCredit()
 	if err != nil {
